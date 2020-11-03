@@ -13,3 +13,11 @@ secrets:
 - kmsKeyName: "projects/dev-fest-2020-294510/locations/global/keyRings/docker-hub-registry/cryptoKeys/dockerhub"
   secretEnv:
     PASSWORD: "CiQANy/koR0MQiWSjcaHRCcG7+tlPoY90ZlTuKX+afx5Nc2GwCMSNgD3ybiQ9C+l+HqoD2zwmWdNhQmkJdBntJmkKmCvWARJI5/cAB7LZGuaJ2eubhB1cphH0jA6dw=="
+# deploy container image to GKE
+- name: "gcr.io/cloud-builders/gke-deploy"
+  args:
+  - run
+  - --filename=gcloud/deployment.yaml
+  - --image=jonathan8231/diabetes:latest
+  - --location=${_CLOUDSDK_COMPUTE_ZONE}
+  - --cluster=${_CLOUDSDK_CONTAINER_CLUSTER}
