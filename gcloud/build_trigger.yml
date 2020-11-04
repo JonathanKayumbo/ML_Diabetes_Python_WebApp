@@ -15,12 +15,25 @@ steps:
 # STEP FOUR: PREPARE TO DEPLOY
 - name: gcr.io/cloud-builders/gke-deploy
   id: 'Prepare to deploy'
-  args: ["prepare", "--filename=$_K8S_YAML_PATH --image=$_IMAGE_NAME:$SHORT_SHA --app=$_K8S_APP_NAME --version=$SHORT_SHA --namespace=default --output=output --annotation=gcb-build-id=$BUILD_ID"]
+  args: 
+  - 'prepare'
+  - '--filename=$_K8S_YAML_PATH' 
+  - '--image=$_IMAGE_NAME:$SHORT_SHA' 
+  - '--app=$_K8S_APP_NAME' 
+  - '--version=$SHORT_SHA' 
+  - '--namespace=default' 
+  - '--output=output' 
+  - '--annotation=gcb-build-id=$BUILD_ID'
   
 #STEP FIVE DEPLOYMENT
 - name: gcr.io/cloud-builders/gke-deploy
-  args: [ "apply", "--filename=output/expanded --cluster=$_GKE_CLUSTER --location=$_GKE_LOCATION"]
-  id: 'Apply deployment'
+  id: "Prepare for deployment"
+  args: 
+  - 'apply' 
+  - '--filename=output/expanded' 
+  - '--cluster=$_GKE_CLUSTER' 
+  - '--location=$_GKE_LOCATION'
+  
 images:
   - $_IMAGE_NAME:$SHORT_SHA
 substitutions:
