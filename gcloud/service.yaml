@@ -10,3 +10,5 @@ spec:
   ports:
   - port: 8501
     targetPort: 8501
+  selector:
+    app: diabetes-webapp

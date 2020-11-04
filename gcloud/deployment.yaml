@@ -1,6 +1,8 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
+  labels:
+    app: diabetes-webapp
   name: diabetes-webapp-deployment
 spec:
   selector:
@@ -16,5 +18,5 @@ spec:
       - name: diabetes-webapp
         image: "jonathan8231/diabetes-webapp"
         ports:
-         - containerPort: 8501
-           protocol : TCP
+          - containerPort: 8501
+            protocol: TCP
