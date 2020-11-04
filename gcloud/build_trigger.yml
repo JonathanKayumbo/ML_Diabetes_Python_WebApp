@@ -43,7 +43,7 @@ substitutions:
    _DOCKERFILE_PATH: Dockerfile
    _IMAGE_NAME: jonathan8231/diabetes-webapp
    _GKE_CLUSTER: devfest-2020
-   _GKE_LOCATION: europe-noth1-a
+   _GKE_LOCATION: europe-north1-a
    _K8S_YAML_PATH: gcloud/deployment.yaml
 options:
      substitution_option: ALLOW_LOOSE
