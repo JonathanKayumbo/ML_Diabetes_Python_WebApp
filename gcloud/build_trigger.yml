@@ -1,77 +1,59 @@
-description: Deploy on push to any branch
-github:
-  name: $REPO_NAME
-  push:
-    branch: $BRANCH_NAME
-build:
-  steps:
-
+steps:
 #STEP ONE : AUTHENTICATION TO DOCKER HUB 
-  - id: Authentication dockerhub
-    name: gcr.io/cloud-builders/docker
-    entrypoint: "bash"
-    args: ["-c", "docker login --username=jonathan8231 --password=$$PASSWORD"]
-    secretEnv: ["PASSWORD"]
+- id: Authentication dockerhub
+  name: gcr.io/cloud-builders/docker
+  entrypoint: "bash"
+  args: ["-c", "docker login --username=jonathan8231 --password=$$PASSWORD"]
+  secretEnv: ["PASSWORD"]
 
 # STEP TWO: BUILD IMAGE WTIH DOCKERFILE
-  - id: Build
-    name: gcr.io/cloud-builders/docker
-    args:
-    - build
-    - -t
-    - $_IMAGE_NAME:$SHORT_SHA
-    - .
-    - -f
-    - $_DOCKERFILE_PATH
+- id: Build
+  name: gcr.io/cloud-builders/docker
+  args:
+  - build
+  - -t
+  - $_IMAGE_NAME:$SHORT_SHA
+  - .
+  - -f
+  - $_DOCKERFILE_PATH
 
 #STEP THREE: PUSH IMAGE TO CONTANER REGISTRY DOCKERHUB
-  - id: Push
-    images:
-    - $_IMAGE_NAME:$SHORT_SHA
-    secrets:
-    - kmsKeyName: "projects/dev-fest-2020-294510/locations/global/keyRings/docker-hub-registry/cryptoKeys/dockerhub"
-      secretEnv:
-         PASSWORD: "CiQANy/koR0MQiWSjcaHRCcG7+tlPoY90ZlTuKX+afx5Nc2GwCMSNgD3ybiQ9C+l+HqoD2zwmWdNhQmkJdBntJmkKmCvWARJI5/cAB7LZGuaJ2eubhB1cphH>
+- id: Push
+images:
+  - $_IMAGE_NAME:$SHORT_SHA
+secrets:
+ - kmsKeyName: "projects/dev-fest-2020-294510/locations/global/keyRings/docker-hub-registry/cryptoKeys/dockerhub"
+   secretEnv:
+     PASSWORD: "CiQANy/koR0MQiWSjcaHRCcG7+tlPoY90ZlTuKX+afx5Nc2GwCMSNgD3ybiQ9C+l+HqoD2zwmWdNhQmkJdBntJmkKmCvWARJI5/cAB7LZGuaJ2eubhB1cphH0jA6dw=="
 
 # STEP FOUR: PREPARE TO DEPLOY
-  - id: Prepare deploy
-    name: gcr.io/cloud-builders/gke-deploy
-    args:
-    - prepare
-    - --filename=$_K8S_YAML_PATH
-    - --image=$_IMAGE_NAME:$SHORT_SHA
-    - --app=$_K8S_APP_NAME
-    - --version=$SHORT_SHA
-    - --namespace=default
-    - --output=output
-    - --annotation=gcb-build-id=$BUILD_ID
+- id: Prepare deploy
+  name: gcr.io/cloud-builders/gke-deploy
+  args:
+  - prepare
+  - --filename=$_K8S_YAML_PATH
+  - --image=$_IMAGE_NAME:$SHORT_SHA
+  - --app=$_K8S_APP_NAME
+  - --version=$SHORT_SHA
+  - --namespace=default
+  - --output=output
+  - --annotation=gcb-build-id=$BUILD_ID
 
 #STEP FIVE DEPLOYMENT
 - id: Apply deploy
-    name: gcr.io/cloud-builders/gke-deploy
-    args:
-    - apply
-    - --filename=output/expanded
-    - --cluster=$_GKE_CLUSTER
-    - --location=$_GKE_LOCATION
-  images:
+  name: gcr.io/cloud-builders/gke-deploy
+  args:
+  - apply
+  - --filename=output/expanded
+  - --cluster=$_GKE_CLUSTER
+  - --location=$_GKE_LOCATION
+images:
   - $_IMAGE_NAME:$SHORT_SHA
-  substitutions:
-    _DOCKERFILE_PATH: Dockerfile
-    _IMAGE_NAME: jonathan8231
-    _GKE_CLUSTER: devfest-2020
-    _GKE_LOCATION: europe-noth1-a
-    _K8S_YAML_PATH: /gcloud/deployment.yaml
-  options:
-    substitution_option: 'ALLOW_LOOSE'
-  #tags:
-  #- $_K8S_APP_NAME
-#substitutions:
-#  _IMAGE_NAME: @IMAGE_NAME@
-#  _GKE_CLUSTER: @CLUSTER@
-#  _GKE_LOCATION: @LOCATION@
-#  _K8S_YAML_PATH: @CONFIGS@
-#  _K8S_APP_NAME: @APP_NAME@
-#  _K8S_NAMESPACE: @NAMESPACE@
-#  _OUTPUT_BUCKET_PATH: @OUTPUT_BUCKET_
-##############################################
+substitutions:
+   _DOCKERFILE_PATH: Dockerfile
+   _IMAGE_NAME: jonathan8231
+   _GKE_CLUSTER: devfest-2020
+   _GKE_LOCATION: europe-noth1-a
+   _K8S_YAML_PATH: /gcloud/deployment.yaml
+options:
+     substitution_option: 'ALLOW_LOOSE'
