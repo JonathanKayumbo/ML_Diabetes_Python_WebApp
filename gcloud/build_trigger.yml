@@ -11,7 +11,10 @@ steps:
 - name: gcr.io/cloud-builders/docker
   id: 'Build docker image'
   args: ['build','-t', '$_IMAGE_NAME:$SHORT_SHA', '-f','$_DOCKERFILE_PATH', '.']
-  
+
+- name: 'gcr.io/cloud-builders/docker'
+  id: 'Push'
+  args: ['push', '$_IMAGE_NAME:$SHORT_SHA']  
 # STEP FOUR: PREPARE TO DEPLOY
 - name: gcr.io/cloud-builders/gke-deploy
   id: 'Prepare to deploy'
