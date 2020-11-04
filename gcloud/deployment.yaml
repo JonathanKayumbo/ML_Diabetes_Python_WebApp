@@ -1,0 +1,20 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: diabetes-webapp-deployment
+spec:
+  selector:
+    matchLabels:
+      app: diabetes-webapp
+  replicas: 2
+  template:
+    metadata:
+      labels:
+        app: diabetes-webapp
+    spec:
+      containers:
+      - name: diabetes-webapp
+        image: "jonathan8231/diabetes-webapp"
+        ports:
+         - containerPort: 8501
+           protocol : TCP
