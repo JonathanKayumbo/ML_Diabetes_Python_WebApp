@@ -13,7 +13,7 @@ Detects if someone has diabetes using Machine Learning and Python
 """)
 
 #Display image
-image = Image.open('/usr/src/app/diabetes.jpg')
+image = Image.open('/usr/src/app/diabetes.jpeg')
 st.image(image, caption='ML', use_column_width=True)
 
 #Get The Data
